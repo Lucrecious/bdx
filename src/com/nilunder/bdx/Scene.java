@@ -603,6 +603,15 @@ public class Scene implements Named{
 	public RayHit ray(Vector3f src, Vector3f vec){
 		return ray(src, vec, (short)~0, (short)~0);
 	}
+
+	public RayHit debug_ray(Vector3f src, Vector3f vec, Color color){
+		this.drawLine(src, src.plus(vec), color);
+		return this.ray(src, vec);
+	}
+
+	public RayHit debug_ray(Vector3f src, Vector3f vec){
+		return this.debug_ray(src, vec, new Color(1f, 0f, 0f, 1f));
+	}
 	
 	public RayHit ray(Vector3f src, Vector3f vec, short group, short mask){
 		Vector3f to = new Vector3f(src);
