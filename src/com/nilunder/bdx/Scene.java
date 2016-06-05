@@ -604,13 +604,13 @@ public class Scene implements Named{
 		return ray(src, vec, (short)~0, (short)~0);
 	}
 
-	public RayHit debug_ray(Vector3f src, Vector3f vec, Color color){
+	public ArrayList<RayHit> debug_xray(Vector3f src, Vector3f vec, com.badlogic.gdx.graphics.Color color){
 		this.drawLine(src, src.plus(vec), color);
-		return this.ray(src, vec);
+		return this.xray(src, vec);
 	}
 
-	public RayHit debug_ray(Vector3f src, Vector3f vec){
-		return this.debug_ray(src, vec, new Color(1f, 0f, 0f, 1f));
+	public ArrayList<RayHit> debug_xray(Vector3f src, Vector3f vec){
+		return this.debug_xray(src, vec, com.nilunder.bdx.utils.Color.RED);
 	}
 	
 	public RayHit ray(Vector3f src, Vector3f vec, short group, short mask){
@@ -907,7 +907,7 @@ public class Scene implements Named{
 
 	}
 
-	public void drawLine(Vector3f start, Vector3f end, Color color){
+	public void drawLine(Vector3f start, Vector3f end, com.badlogic.gdx.graphics.Color color){
 		ArrayList<Object> commands = new ArrayList<Object>();
 		commands.add("drawLine");
 		commands.add(color);
@@ -916,7 +916,7 @@ public class Scene implements Named{
 		drawCommands.add(commands);
 	}
 
-	public void drawPoint(Vector3f point, Color color){
+	public void drawPoint(Vector3f point, com.badlogic.gdx.graphics.Color color){
 		ArrayList<Object> commands = new ArrayList<Object>();
 		commands.add("drawPoint");
 		commands.add(color);
@@ -929,7 +929,7 @@ public class Scene implements Named{
 		for (ArrayList<Object> commands : drawCommands) {
 
 			String func = (String) commands.get(0);
-			Color color = (Color) commands.get(1);
+			com.badlogic.gdx.graphics.Color color = (com.badlogic.gdx.graphics.Color) commands.get(1);
 			Vector3f start = (Vector3f) commands.get(2);
 
 			if (func.equals("drawLine")) {

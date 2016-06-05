@@ -695,21 +695,24 @@ public class GameObject implements Named{
 		return axis(String.valueOf("XYZ".charAt(axis)));
 	}
 	
-	public void alignAxisToVec(String axisName, Vector3f vec){
+	public void alignAxisToVec(String axisName, Vector3f vec, float time){
 		Vector3f alignAxis = axis(axisName);
 		Vector3f rotAxis = new Vector3f();
 		rotAxis.cross(alignAxis, vec);
 		if (rotAxis.length() == 0)
 			rotAxis = axis(("XYZ".indexOf(axisName) + 1) % 3);
-		Matrix3f rotMatrix = Matrix3f.rotation(rotAxis, alignAxis.angle(vec));
+		Matrix3f rotMatrix = Matrix3f.rotation(rotAxis, time*alignAxis.angle(vec));
 		Matrix3f ori = orientation();
 		rotMatrix.mul(ori);
 		orientation(rotMatrix);
 	}
 
-	public void alignAxisToVec(int axis, Vector3f vec){
+	public void alignAxisToVec(int axis, Vector3f vec, float time){
 		alignAxisToVec(String.valueOf("XYZ".charAt(axis)), vec);
 	}
+
+	public void alignAxisToVec(String axisName, Vector3f vec) { alignAxisToVec(axisName, vec, 1f); }
+	public void alignAxisToVec(int axis, Vector3f vec) { alignAxisToVec(axis, vec, 1f); }
 
 	public String modelName(){
 		return modelInstance.model.meshParts.first().id;
