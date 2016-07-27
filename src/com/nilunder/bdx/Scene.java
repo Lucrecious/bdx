@@ -336,15 +336,15 @@ public class Scene implements Named{
 				} else {
 					TFText t = (TFText) g;
 
-                    try {
-                        t.generator = fontGenerators.get(gobj.get("font").asString());
-                        t.baseFont = bitmapFonts.get(gobj.get("font").asString());
+					if (fontGenerators.containsKey(gobj.get("font").asString())) {
+						t.generator = fontGenerators.get(gobj.get("font").asString());
+						t.baseFont = bitmapFonts.get(gobj.get("font").asString());
 
-                        t.parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-                        t.parameter.characters = parameter.characters;
-                        t.parameter.color = parameter.color;
-                    } catch (NullPointerException n) {
-                        throw new RuntimeException("Font " + gobj.get("font").asString() + ".ttf doesn't exist in bdx/fonts");
+						t.parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+						t.parameter.characters = parameter.characters;
+						t.parameter.color = parameter.color;
+                    } else {
+                        throw new RuntimeException(gobj.get("font").asString() + ".ttf does not exist in bdx/fonts/");
                     }
 
 					t.text = gobj.get("text").asString();
