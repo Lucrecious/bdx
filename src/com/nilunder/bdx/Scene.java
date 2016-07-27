@@ -334,7 +334,7 @@ public class Scene implements Named{
 					t.text(gobj.get("text").asString());
 					t.capacity = t.text().length();
 				} else {
-					TFText t = (TFText) g;
+					com.nilunder.bdx.TFText t = (com.nilunder.bdx.TFText) g;
 
 					if (fontGenerators.containsKey(gobj.get("font").asString())) {
 						t.generator = fontGenerators.get(gobj.get("font").asString());
@@ -523,9 +523,9 @@ public class Scene implements Named{
 			t.text(tt.text());
 			t.capacity = tt.capacity;
 			t.useUniqueModel();
-		} else if(g instanceof TFText) {
-			TFText t = (TFText)g;
-			TFText tt = (TFText)gobj;
+		} else if(g instanceof com.nilunder.bdx.TFText) {
+			com.nilunder.bdx.TFText t = (com.nilunder.bdx.TFText)g;
+			com.nilunder.bdx.TFText tt = (com.nilunder.bdx.TFText)gobj;
 
 			t.baseFont = tt.baseFont;
 			t.parameter = tt.parameter;

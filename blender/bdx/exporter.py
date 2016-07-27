@@ -98,7 +98,7 @@ def mat_tris(mesh):
 def srl_models(objects, use_mesh_modifiers):
     name_model = {}
 
-    tfs = 3 * 8 # triangle float size: 3 verts at 8 floats each
+    tfs = 3 * 8 # triangle float screenHeight: 3 verts at 8 floats each
 
     for o in objects:
         if o.type != "MESH":
@@ -293,7 +293,7 @@ def view_plane(camd, winx, winy, xasp, yasp):
       ycor *= 2
 
     def BKE_camera_sensor_size(p_sensor_fit, sensor_x, sensor_y):
-        #/* sensor size used to fit to. for auto, sensor_x is both x and y. */
+        #/* sensor screenHeight used to fit to. for auto, sensor_x is both x and y. */
         if (p_sensor_fit == 'VERTICAL'):
             return sensor_y;
 

@@ -262,19 +262,26 @@ public class Bdx{
 			}
 
 			Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
+
+			ArrayList<TFText> tfTexts = new ArrayList<>();
+
 			modelBatch.begin(scene.camera.data);
-			spriteBatch.begin();
 			for (GameObject g : scene.objects){
 				if (g.visible() && g.insideFrustum()){
 					if (g instanceof TFText) {
-						((TFText) g).draw(spriteBatch);
+						tfTexts.add((com.nilunder.bdx.TFText)g);
 					} else {
 						modelBatch.render(g.modelInstance, scene.environment);
 					}
 				}
 			}
-			spriteBatch.end();
 			modelBatch.end();
+
+			spriteBatch.begin();
+			for (com.nilunder.bdx.TFText t : tfTexts) {
+				t.draw(spriteBatch);
+			}
+			spriteBatch.end();
 
 			scene.executeDrawCommands();
 
@@ -407,7 +414,7 @@ public class Bdx{
 		if (depthBuffer != null)
 			depthBuffer.dispose();
 		
-		frameBuffer = new RenderBuffer(spriteBatch);		// Have to recreate all render buffers and adjust the projection matrix as the window size has changed
+		frameBuffer = new RenderBuffer(spriteBatch);		// Have to recreate all render buffers and adjust the projection matrix as the window screenHeight has changed
 		tempBuffer = new RenderBuffer(spriteBatch);
 		depthBuffer = new RenderBuffer(spriteBatch);
 

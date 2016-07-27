@@ -2,10 +2,9 @@ package com.nilunder.bdx;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.nilunder.bdx.Bdx;
-import com.nilunder.bdx.GameObject;
 
 import javax.vecmath.Vector2f;
 
@@ -22,23 +21,45 @@ public class TFText extends GameObject {
 
     // Set on font generation
     private BitmapFont bitmapFont;
-    private int size;
+    private GlyphLayout glyphLayout;
 
-    public int size() {
-        return size;
+    public float screenHeight() {
+        return font().getCapHeight();
     }
 
-    public void draw(SpriteBatch batch) {
+    private Float spaceHeight;
+    public float spaceHeight() {
+        if (spaceHeight == null) {
+            if (children.size() == 2) {
+                spaceHeight = children.get(0).position().minus(children.get(1).position()).length();
+            } else {
+                spaceHeight = scale().length();
+            }
+        }
+
+        return spaceHeight;
+    }
+
+    public BitmapFont font() {
         if (bitmapFont == null) {
             bitmapFont = generateFont();
         }
+        return bitmapFont;
+    }
 
+    public GlyphLayout glyphLayout() {
+        return glyphLayout;
+    }
+
+    public void draw(SpriteBatch batch) {
         Vector2f screenPos = scene.camera.screenPosition(position());
         Vector2f size = Bdx.display.size();
+
+        BitmapFont bitmapFont = font();
         float offset = bitmapFont.getCapHeight();
 
         bitmapFont.setColor(materials.size() == 0 ? Color.WHITE : materials.get(0).color());
-        bitmapFont.draw(batch, text != null ? text : "", screenPos.x*size.x, screenPos.y*size.y + offset);
+        glyphLayout = bitmapFont.draw(batch, text != null ? text : "", screenPos.x*size.x, screenPos.y*size.y + offset);
     }
 
     private BitmapFont generateFont() {
@@ -52,8 +73,6 @@ public class TFText extends GameObject {
         } else {
             parameter.size = 72;
         }
-
-        this.size = parameter.size;
 
         return generator.generateFont(parameter);
     }
