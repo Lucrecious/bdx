@@ -1,10 +1,9 @@
-package com.nilunder.bdx.utils;
+package com.nilunder.bdx;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector3;
 import com.nilunder.bdx.Bdx;
 import com.nilunder.bdx.GameObject;
 
@@ -38,6 +37,7 @@ public class TFText extends GameObject {
         Vector2f size = Bdx.display.size();
         float offset = bitmapFont.getCapHeight();
 
+        bitmapFont.setColor(materials.size() == 0 ? Color.WHITE : materials.get(0).color());
         bitmapFont.draw(batch, text != null ? text : "", screenPos.x*size.x, screenPos.y*size.y + offset);
     }
 

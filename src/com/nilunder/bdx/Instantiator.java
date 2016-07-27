@@ -1,7 +1,6 @@
 package com.nilunder.bdx;
 
 import com.badlogic.gdx.utils.JsonValue;
-import com.nilunder.bdx.utils.TFText;
 
 public class Instantiator {
 
