@@ -13,6 +13,8 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -46,6 +48,9 @@ import com.nilunder.bdx.inputs.*;
 import com.nilunder.bdx.components.*;
 import com.nilunder.bdx.GameObject.ArrayListGameObject;
 
+//import static com.sun.tools.doclint.Entity.or;
+//import static com.sun.tools.doclint.Entity.para;
+
 public class Scene implements Named{
 	public static HashMap<String, Instantiator> instantiators;
 
@@ -63,6 +68,7 @@ public class Scene implements Named{
 	public HashMap<String,Model> models;
 	private HashMap<String,Texture> textures;
 	public HashMap<String,Material> materials;
+    public HashMap<String, FreeTypeFontGenerator> fontGenerators;
 	public Material defaultMaterial;
 	private Model defaultModel;
 	public DiscreteDynamicsWorld world;
@@ -162,6 +168,7 @@ public class Scene implements Named{
 		textures = new HashMap<String,Texture>();
 		materials = new HashMap<String,Material>();
 		modelToFrame = new HashMap<>();
+        fontGenerators = new HashMap<>();
 
 		materials.put(defaultMaterial.id, defaultMaterial);
 		
@@ -257,11 +264,26 @@ public class Scene implements Named{
 			models.put(model.name, createModel(model));
 		}
 
+
+		// Start: Font things
 		HashMap<String, JsonValue> fonts = new HashMap<>();
+		HashMap<String, BitmapFont> bitmapFonts = new HashMap<>();
+		FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+		parameter.characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.!'()>?:";
+		parameter.color = Color.WHITE;
+		parameter.size = 72;
+
 		for (JsonValue fontj: json.get("fonts")){
 			String font = fontj.asString();
 			fonts.put(font, new JsonReader().parse(Gdx.files.internal("bdx/fonts/"+font+".fntx")));
+			if (!fontGenerators.containsKey(font)) {
+				if (Gdx.files.internal("bdx/fonts/"+font+".ttf").exists()) {
+					fontGenerators.put(font, new FreeTypeFontGenerator(Gdx.files.internal("bdx/fonts/" + font + ".ttf")));
+					bitmapFonts.put(font, fontGenerators.get(font).generateFont(parameter));
+				}
+			}
 		}
+		// End: Font things
 
 		FAnim.loadActions(json.get("actions"));
 
@@ -302,13 +324,32 @@ public class Scene implements Named{
 			g.body = Bullet.makeBody(mesh, trans, g.origin, g.currBodyType, g.currBoundsType, physics);
 			g.body.setUserPointer(g);
 			g.scale(getGLMatrixScale(trans));
-			
+
+
 			String type = gobj.get("type").asString();
-			if (type.equals("FONT")){
-				Text t = (Text)g;
-				t.font = fonts.get(gobj.get("font").asString());
-				t.text(gobj.get("text").asString());
-				t.capacity = t.text().length();
+			if (type.equals("FONT")) {
+				if (!gobj.get("properties").has("truefont")) {
+					Text t = (Text) g;
+					t.font = fonts.get(gobj.get("font").asString());
+					t.text(gobj.get("text").asString());
+					t.capacity = t.text().length();
+				} else {
+					TFText t = (TFText) g;
+
+                    try {
+                        t.generator = fontGenerators.get(gobj.get("font").asString());
+                        t.baseFont = bitmapFonts.get(gobj.get("font").asString());
+
+                        t.parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+                        t.parameter.characters = parameter.characters;
+                        t.parameter.color = parameter.color;
+                    } catch (NullPointerException n) {
+                        throw new RuntimeException("Font " + gobj.get("font").asString() + ".ttf doesn't exist in bdx/fonts");
+                    }
+
+					t.text = gobj.get("text").asString();
+					t.capacity = t.text.length();
+				}
 			}else if (type.equals("LAMP")){
 				JsonValue settings = gobj.get("lamp");
 				Light l = (Light)g;
@@ -352,12 +393,12 @@ public class Scene implements Named{
 				vec.prj(pm);
 				c.far(-vec.z);
 			}
-			
+
 			templates.put(g.name, g);
 		}
 
 		hookParentChild();
-		
+
 		addInstances();
 		
 		cameras = new ArrayList<Camera>();
@@ -478,10 +519,21 @@ public class Scene implements Named{
 			Text t = (Text)g;
 			Text tt = (Text)gobj;
 			t.font = tt.font;
+
 			t.text(tt.text());
 			t.capacity = tt.capacity;
 			t.useUniqueModel();
-		}else if (g instanceof Light){
+		} else if(g instanceof TFText) {
+			TFText t = (TFText)g;
+			TFText tt = (TFText)gobj;
+
+			t.baseFont = tt.baseFont;
+			t.parameter = tt.parameter;
+			t.generator = tt.generator;
+			t.text = tt.text;
+			t.capacity = tt.capacity;
+			t.useUniqueModel();
+		} else if (g instanceof Light){
 			Light l = (Light)g;
 			Light ll = (Light)gobj;
 			l.energy(ll.energy());
@@ -887,6 +939,11 @@ public class Scene implements Named{
 
 		for (GameObject g : objects)
 			g.end();
+
+        // Make sure to dispose of all the font generators since none of them will be used after this scene is deleted
+        for (FreeTypeFontGenerator generator : fontGenerators.values()) {
+            generator.dispose();
+        }
 
 		dispose();
 

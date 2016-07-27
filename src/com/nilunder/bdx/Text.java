@@ -1,12 +1,17 @@
 package com.nilunder.bdx;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.graphics.*;
+
+import javax.vecmath.Vector2f;
 
 public class Text extends GameObject{
 	private String text;
 	public JsonValue font;
 	public int capacity;
+
 
 	public void text(String txt){
 		// Reform quads according to Angel Code font format
@@ -79,6 +84,7 @@ public class Text extends GameObject{
 		mesh.setVertices(verts, 0, verts.length);
 
 	}
+
 	public String text(){
 		return text;
 	}

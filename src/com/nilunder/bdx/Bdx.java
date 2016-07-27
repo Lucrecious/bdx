@@ -23,7 +23,7 @@ public class Bdx{
 	public static class Display{
 
 		public void size(int width, int height){
-			Gdx.graphics.setDisplayMode(width, height, fullscreen());
+			Gdx.graphics.setWindowedMode(width, height);
 			refreshGamepadsTimer.restart();
 			refreshGamepadsTimer.resume();
 		}
@@ -37,8 +37,11 @@ public class Bdx{
 			return new Vector2f(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 		}
 		public void fullscreen(boolean full){
-			Graphics.DisplayMode dm = Gdx.graphics.getDesktopDisplayMode();
-			Gdx.graphics.setDisplayMode(dm.width, dm.height, full);
+			if (full) {
+				Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+			} else {
+				size(size());
+			}
 			refreshGamepadsTimer.restart();
 			refreshGamepadsTimer.resume();
 		}
@@ -220,6 +223,7 @@ public class Bdx{
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		profiler.stop("__render");
 
+
 		// -------- Update Input --------
 		if (refreshGamepadsTimer.done()) {	// Recreate gamepad objects as necessary
 			refreshGamepadsTimer.restart();
@@ -259,11 +263,17 @@ public class Bdx{
 
 			Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
 			modelBatch.begin(scene.camera.data);
+			spriteBatch.begin();
 			for (GameObject g : scene.objects){
 				if (g.visible() && g.insideFrustum()){
-					modelBatch.render(g.modelInstance, scene.environment);
+					if (g instanceof TFText) {
+						((TFText) g).draw(spriteBatch);
+					} else {
+						modelBatch.render(g.modelInstance, scene.environment);
+					}
 				}
 			}
+			spriteBatch.end();
 			modelBatch.end();
 
 			scene.executeDrawCommands();
