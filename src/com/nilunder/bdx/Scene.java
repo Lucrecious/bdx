@@ -269,7 +269,7 @@ public class Scene implements Named{
 		HashMap<String, JsonValue> fonts = new HashMap<>();
 		HashMap<String, BitmapFont> bitmapFonts = new HashMap<>();
 		FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-		parameter.characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.!'()>?:";
+		parameter.characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.!'()<>?:,;/-+=[]{}@#$%^&*";
 		parameter.color = Color.WHITE;
 		parameter.size = 72;
 
