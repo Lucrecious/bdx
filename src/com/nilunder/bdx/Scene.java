@@ -528,10 +528,15 @@ public class Scene implements Named{
 			com.nilunder.bdx.TFText tt = (com.nilunder.bdx.TFText)gobj;
 
 			t.baseFont = tt.baseFont;
+            t.bitmapFont = tt.bitmapFont;
+
 			t.parameter = tt.parameter;
 			t.generator = tt.generator;
 			t.text = tt.text;
 			t.capacity = tt.capacity;
+            t.targetWidth = tt.targetWidth;
+            t.alignment = tt.alignment;
+            t.useAlignment = tt.useAlignment;
 			t.useUniqueModel();
 		} else if (g instanceof Light){
 			Light l = (Light)g;

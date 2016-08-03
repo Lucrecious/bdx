@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.utils.Align;
 
 import javax.vecmath.Vector2f;
 
@@ -17,11 +18,27 @@ public class TFText extends GameObject {
     public FreeTypeFontGenerator generator;
 
     public String text;
+
+    public boolean useAlignment = false;
+    public int alignment = Align.left;
+    public float targetWidth = 0;
+
     public int capacity;
 
     // Set on font generation
-    private BitmapFont bitmapFont;
-    private GlyphLayout glyphLayout;
+    public BitmapFont bitmapFont;
+
+    public void useAlignment() {
+        if (targetWidth == 0) {
+            throw new RuntimeException("Can't use alignment without set width");
+        }
+
+        useAlignment = true;
+    }
+
+    public void useRegular() {
+        useAlignment = false;
+    }
 
     public float screenHeight() {
         return font().getCapHeight();
@@ -47,10 +64,6 @@ public class TFText extends GameObject {
         return bitmapFont;
     }
 
-    public GlyphLayout glyphLayout() {
-        return glyphLayout;
-    }
-
     public void draw(SpriteBatch batch) {
         Vector2f screenPos = scene.camera.screenPosition(position());
         Vector2f size = Bdx.display.size();
@@ -59,8 +72,15 @@ public class TFText extends GameObject {
         float offset = bitmapFont.getCapHeight();
 
         bitmapFont.setColor(materials.size() == 0 ? Color.WHITE : materials.get(0).color());
-        glyphLayout = bitmapFont.draw(batch, text != null ? text : "", screenPos.x*size.x, screenPos.y*size.y + offset);
+
+        if (!useAlignment) {
+            bitmapFont.draw(batch, text != null ? text : "", screenPos.x * size.x, screenPos.y * size.y + offset);
+        } else {
+            bitmapFont.draw(batch, text != null ? text : "", screenPos.x * size.x, screenPos.y * size.y + offset,
+                            targetWidth, alignment, false);
+        }
     }
+
 
     private BitmapFont generateFont() {
         float size;
