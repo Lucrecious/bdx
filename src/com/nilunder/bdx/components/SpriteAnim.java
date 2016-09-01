@@ -157,7 +157,13 @@ public class SpriteAnim extends Component<GameObject> {
 
 		if (active != next){
 			active = next;
-			ticker.done(true); // immediate play
+			ticker.restart();
+
+			if (active != null) {
+				active.reset();
+				showNextFrame();
+			}
+			//ticker.done(true); // immediate play
 		}
 
 		if (!active.looping && active.onLastFrame()){
@@ -168,8 +174,8 @@ public class SpriteAnim extends Component<GameObject> {
 	}
 
 	public void showNextFrame(){
-		active.playDir = speed * active.fps < 0 ? -1 : 1;
-		uvFrame(active.nextFrame());
+        active.playDir = speed * active.fps < 0 ? -1 : 1;
+        uvFrame(active.nextFrame());
 	}
 
 	public void frame(int frame){
@@ -179,6 +185,19 @@ public class SpriteAnim extends Component<GameObject> {
 
 	public int frame(){
 		return active.playHead - 1;
+	}
+
+	public Vector2f xyFrame() {
+		Vector2f xyFrame = new Vector2f(active.get(active.playHead - 1));
+        xyFrame.x /= frameDim.x;
+        xyFrame.y /= frameDim.y;
+
+		return xyFrame;
+	}
+
+	public int sequenceFrame() {
+		Vector2f frame = active.get(active.playHead - 1);
+		return Math.round(rowBased ? (frame.x / frameDim.x) : (frame.y / frameDim.y));
 	}
 
 	public boolean frameChanged(){
