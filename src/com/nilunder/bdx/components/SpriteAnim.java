@@ -197,7 +197,7 @@ public class SpriteAnim extends Component<GameObject> {
 
 	public int sequenceFrame() {
 		Vector2f frame = active.get(active.playHead - 1);
-		return Math.round(rowBased ? (frame.x / frameDim.x) : (frame.y / frameDim.y));
+		return (int)(rowBased ? (frame.x / frameDim.x) : (frame.y / frameDim.y));
 	}
 
 	public boolean frameChanged(){
