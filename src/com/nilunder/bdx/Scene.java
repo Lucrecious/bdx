@@ -601,7 +601,7 @@ public class Scene implements Named{
 
 	}
 	
-	private void initGameObject(GameObject gobj){
+	public void initGameObject(GameObject gobj){
 		gobj.init();
 
 		ArrayList<GameObject> children = new ArrayList<GameObject>(gobj.children);
@@ -611,7 +611,7 @@ public class Scene implements Named{
 		}
 	}
 
-	private void addToWorld(GameObject gobj){
+	public void addToWorld(GameObject gobj){
 		if (!gobj.currBodyType.equals("NO_COLLISION")){
 			world.addRigidBody(gobj.body, gobj.json.get("physics").get("group").asShort(), gobj.json.get("physics").get("mask").asShort());
 			if (gobj.currBodyType.equals("STATIC") || gobj.currBodyType.equals("SENSOR"))
