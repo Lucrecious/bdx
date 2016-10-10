@@ -474,6 +474,55 @@ public class Scene implements Named{
 		toBeAdded.clear();
 	}
 
+    private GameObject syncCloneNoChildren(GameObject gobj) {
+        GameObject g = instantiator.newObject(gobj.json);
+
+        g.json = gobj.json;
+
+        g.name = gobj.name;
+        g.visibleNoChildren(gobj.visible());
+
+        g.currBodyType = gobj.currBodyType;
+        g.currBoundsType = gobj.currBoundsType;
+        g.origin = gobj.origin;
+        g.dimensionsNoScale = gobj.dimensionsNoScale;
+
+        g.props = gobj.props;
+
+        g.scene = this;
+
+        // To be properly instanced later
+        g.modelInstance = gobj.modelInstance;
+        g.materials = gobj.materials;
+
+        g.body = gobj.body;
+
+        return g;
+    }
+
+    private GameObject syncFinishClone(GameObject gobj) {
+        gobj.modelInstance = new ModelInstance(gobj.modelInstance);
+
+        GameObject.ArrayListMaterials m = gobj.materials;
+        gobj.materials = gobj.new ArrayListMaterials();
+
+        for (NodePart part : gobj.modelInstance.nodes.get(0).parts){
+            Material mat = new Material(m.get(part.material.id));
+            gobj.materials.add(mat);
+            part.material = mat;
+        }
+
+        gobj.body = Bullet.cloneBody(gobj.body);
+        gobj.body.setUserPointer(gobj);
+        gobj.scale(templates.get(gobj.name()).scale());
+
+        for (GameObject c : gobj.children) {
+            syncFinishClone(c);
+        }
+
+        return gobj;
+    }
+
 	private GameObject cloneNoChildren(GameObject gobj){
 		GameObject g = instantiator.newObject(gobj.json);
 
@@ -567,6 +616,41 @@ public class Scene implements Named{
 		return g;
 	}
 
+    private GameObject syncClone(GameObject gobj) {
+        String instance = gobj.json.get("instance").asString();
+
+        GameObject inst = gobj;
+
+        if (instance != null) {
+            gobj = templates.get(instance);
+        }
+
+        GameObject g = syncCloneNoChildren(gobj);
+
+        for (GameObject c : gobj.children) {
+            GameObject nc = syncClone(c);
+            nc.parent(g);
+        }
+
+        if (instance != null) {
+            g.position(inst.position());
+            Matrix3f ori = inst.orientation();
+            ori.mul(g.orientation());
+            g.orientation(ori);
+            g.scale(inst.scale());
+
+            g.props = new HashMap<String, JsonValue>(g.props);
+            g.props.putAll(inst.props);
+
+            for (GameObject c : inst.children) {
+                GameObject nc = syncClone(c);
+                nc.parent(g);
+            }
+        }
+
+        return g;
+    }
+
 	private GameObject clone(GameObject gobj){
 		String instance = gobj.json.get("instance").asString();
 
@@ -601,7 +685,7 @@ public class Scene implements Named{
 
 	}
 	
-	public void initGameObject(GameObject gobj){
+	private void initGameObject(GameObject gobj){
 		gobj.init();
 
 		ArrayList<GameObject> children = new ArrayList<GameObject>(gobj.children);
@@ -611,7 +695,7 @@ public class Scene implements Named{
 		}
 	}
 
-	public void addToWorld(GameObject gobj){
+	private void addToWorld(GameObject gobj){
 		if (!gobj.currBodyType.equals("NO_COLLISION")){
 			world.addRigidBody(gobj.body, gobj.json.get("physics").get("group").asShort(), gobj.json.get("physics").get("mask").asShort());
 			if (gobj.currBodyType.equals("STATIC") || gobj.currBodyType.equals("SENSOR"))
@@ -626,13 +710,26 @@ public class Scene implements Named{
 			addToWorld(g);
 		}
 	}
-	
-	public GameObject add(GameObject gobj){		
-		GameObject g = clone(gobj);
-		addToWorld(g);
-		initGameObject(g);
-		
-		return g;
+
+    public GameObject syncStartAdd(GameObject gobj) {
+        return syncClone(gobj);
+    }
+
+    public GameObject syncFinishAdd(GameObject gobj) {
+        gobj = syncFinishClone(gobj);
+        addToWorld(gobj);
+        initGameObject(gobj);
+
+        return gobj;
+    }
+
+
+	public GameObject add(GameObject gobj){
+			GameObject g = clone(gobj);
+			addToWorld(g);
+			initGameObject(g);
+
+			return g;
 	}
 	
 	public GameObject addNoChildren(GameObject gobj){
