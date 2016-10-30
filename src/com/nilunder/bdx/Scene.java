@@ -516,9 +516,11 @@ public class Scene implements Named{
         gobj.body.setUserPointer(gobj);
         gobj.scale(templates.get(gobj.name()).scale());
 
-        for (GameObject c : gobj.children) {
-            syncFinishClone(c);
+        if (gobj.isSync()) {
+            gobj.position(gobj.sync().position);
         }
+
+        gobj.children.forEach(this::syncFinishClone);
 
         return gobj;
     }
@@ -713,6 +715,10 @@ public class Scene implements Named{
 
     public GameObject syncStartAdd(GameObject gobj) {
         return syncClone(gobj);
+    }
+
+    public GameObject syncStartAdd(String name) {
+        return syncClone(templates.get(name));
     }
 
     public GameObject syncFinishAdd(GameObject gobj) {

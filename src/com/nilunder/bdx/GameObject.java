@@ -32,8 +32,9 @@ import com.nilunder.bdx.gl.Material;
 import com.nilunder.bdx.utils.*;
 
 public class GameObject implements Named{
+
 	public JsonValue json;
-	
+
 	public String name;
 	public ArrayListGameObject touchingObjects;
 	public ArrayListGameObject touchingObjectsLast;
@@ -46,7 +47,7 @@ public class GameObject implements Named{
 	public Vector3f dimensionsNoScale;
 	
 	public HashMap<String, JsonValue> props;
-	
+
 	public ArrayListGameObject children;
 	
 	public ArrayListNamed<Component> components;
@@ -1045,4 +1046,28 @@ public class GameObject implements Named{
 		return scene.camera.data.frustum.boundsInFrustum(center.x, center.y, center.z, dimHalved.x, dimHalved.y, dimHalved.z);
 	}
 
+
+	public static class Sync {
+		public Vector3f position;
+		public HashMap<String, Object> misc;
+
+		public Sync() {
+			position = null;
+			misc = new HashMap<>();
+		}
+	}
+
+	private Sync sync;
+
+	public Sync sync() {
+		if (sync == null) {
+			sync = new Sync();
+		}
+
+		return sync;
+	}
+
+	public boolean isSync() {
+		return sync != null;
+	}
 }
