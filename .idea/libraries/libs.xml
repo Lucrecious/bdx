@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="libs">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/blender/bdx/libs/gbullet.jar!/" />
+      <root url="jar://$PROJECT_DIR$/blender/bdx/libs/gwt-vecmath.jar!/" />
+      <root url="jar://$PROJECT_DIR$/blender/bdx/libs/bdx.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

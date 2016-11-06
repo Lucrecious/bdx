@@ -730,6 +730,15 @@ public class GameObject implements Named{
 		}
 	}
 
+	public void shareModel(GameObject gobj) {
+		ModelInstance mi = new ModelInstance(gobj.modelInstance);
+		mi.transform.set(modelInstance.transform);
+		modelInstance = mi;
+		/*for (int i = 0; i < modelInstance.nodes.get(0).parts.size; i++){
+			modelInstance.nodes.get(0).parts.get(i).material = gobj.materials.get(i);
+		}*/
+	}
+
 	public void replaceModel(String modelName, boolean updateVisual, boolean updatePhysics){
 		if (modelName.equals(modelName()))
 			return;
@@ -802,8 +811,12 @@ public class GameObject implements Named{
 	public void replaceModel(String modelName){
 		replaceModel(modelName, true, false);
 	}
-	
-	public void updateJoinedMesh(boolean endJoinedMeshObjects){
+
+	public void updateJoinedMesh(boolean endJoinedMeshObject) {
+		updateJoinedMesh(endJoinedMeshObject, true);
+	}
+
+	public void updateJoinedMesh(boolean endJoinedMeshObjects, boolean deletechildren){
 		
 		// Set invisible and remove body if not joining anything
 		
@@ -912,7 +925,11 @@ public class GameObject implements Named{
 		
 		if (endJoinedMeshObjects){
 			for (GameObject jmo : joinedMeshObjects){
-				jmo.end();
+				if (deletechildren) {
+					jmo.end();
+				} else {
+					jmo.endNoChildren();
+				}
 			}
 			joinedMeshObjects.clear();
 		}
