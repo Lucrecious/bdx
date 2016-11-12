@@ -1066,6 +1066,7 @@ public class GameObject implements Named{
 
 	public static class Sync {
 		public Vector3f position;
+		public GameObject relativeTo;
 		public HashMap<String, Object> misc;
 
 		public Sync() {

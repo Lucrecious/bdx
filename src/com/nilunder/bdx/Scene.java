@@ -474,7 +474,7 @@ public class Scene implements Named{
 		toBeAdded.clear();
 	}
 
-    private GameObject syncCloneNoChildren(GameObject gobj) {
+    private GameObject syncCloneNoChildren(GameObject gobj, boolean newProps) {
         GameObject g = instantiator.newObject(gobj.json);
 
         g.json = gobj.json;
@@ -487,7 +487,11 @@ public class Scene implements Named{
         g.origin = gobj.origin;
         g.dimensionsNoScale = gobj.dimensionsNoScale;
 
-        g.props = gobj.props;
+		g.props = gobj.props;
+		if (newProps) {
+			g.props = new HashMap<>(gobj.props);
+			g.props.putAll(gobj.props);
+		}
 
         g.scene = this;
 
@@ -517,8 +521,12 @@ public class Scene implements Named{
         gobj.scale(templates.get(gobj.name()).scale());
 
         if (gobj.isSync()) {
-            gobj.position(gobj.sync().position);
-        }
+			if (gobj.sync().relativeTo != null) {
+				gobj.position(gobj.sync().relativeTo.sync().position.plus(gobj.sync().position));
+			} else if (gobj.sync().position != null) {
+				gobj.position(gobj.sync().position);
+			}
+		}
 
         gobj.children.forEach(this::syncFinishClone);
 
@@ -618,7 +626,7 @@ public class Scene implements Named{
 		return g;
 	}
 
-    private GameObject syncClone(GameObject gobj) {
+    private GameObject syncClone(GameObject gobj, boolean newProps) {
         String instance = gobj.json.get("instance").asString();
 
         GameObject inst = gobj;
@@ -627,10 +635,10 @@ public class Scene implements Named{
             gobj = templates.get(instance);
         }
 
-        GameObject g = syncCloneNoChildren(gobj);
+        GameObject g = syncCloneNoChildren(gobj, newProps);
 
         for (GameObject c : gobj.children) {
-            GameObject nc = syncClone(c);
+            GameObject nc = syncClone(c, newProps);
             nc.parent(g);
         }
 
@@ -641,11 +649,8 @@ public class Scene implements Named{
             g.orientation(ori);
             g.scale(inst.scale());
 
-            g.props = new HashMap<String, JsonValue>(g.props);
-            g.props.putAll(inst.props);
-
             for (GameObject c : inst.children) {
-                GameObject nc = syncClone(c);
+                GameObject nc = syncClone(c, newProps);
                 nc.parent(g);
             }
         }
@@ -713,12 +718,20 @@ public class Scene implements Named{
 		}
 	}
 
-    public GameObject syncStartAdd(GameObject gobj) {
-        return syncClone(gobj);
+	public GameObject syncStartAdd(String name) {
+		return syncStartAdd(name, false);
+	}
+
+	public GameObject syncStartAdd(GameObject gobj) {
+		return syncStartAdd(gobj, false);
+	}
+
+    public GameObject syncStartAdd(GameObject gobj, boolean newProps) {
+        return syncClone(gobj, newProps);
     }
 
-    public GameObject syncStartAdd(String name) {
-        return syncClone(templates.get(name));
+    public GameObject syncStartAdd(String name, boolean newProps) {
+        return syncClone(templates.get(name), newProps);
     }
 
     public GameObject syncFinishAdd(GameObject gobj) {

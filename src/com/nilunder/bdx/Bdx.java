@@ -352,8 +352,12 @@ public class Bdx{
 				scene.lastFrameBuffer.clear();
 				frameBuffer.drawTo(scene.lastFrameBuffer);
 			}
-			
+
 			display.clearColor(display.clearColor());
+
+			if (Bdx.keyboard.keyDown("lctrl") && Bdx.keyboard.keyHit("s")) {
+				ScreenshotFactory.saveScreenshot();
+			}
 
 			// ------- Render physics debug view --------
 
