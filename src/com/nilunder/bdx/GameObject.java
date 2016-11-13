@@ -833,7 +833,7 @@ public class GameObject implements Named{
 		ArrayList<float[]> tvaList = new ArrayList<float[]>();
 		int tvaListJoinedLength = 0;
 		GameObject g = null;
-		
+
 		for (int k=0; k < joinedMeshObjects.size(); k++){
 			g = joinedMeshObjects.get(k);
 			
@@ -854,6 +854,7 @@ public class GameObject implements Named{
 				Vector3f nP = new Vector3f(va[j+3], va[j+4], va[j+5]);
 				Vector3f vPT = o.mult(vP.mul(s)).plus(p);
 				Vector3f nPT = o.mult(vP.plus(nP)).minus(o.mult(vP));
+
 				tva[j] = vPT.x;
 				tva[j+1] = vPT.y;
 				tva[j+2] = vPT.z;
@@ -906,9 +907,9 @@ public class GameObject implements Named{
 		bbox.getCenter(center);
 		dimensionsNoScale = new Vector3f(dimensions.x, dimensions.y, dimensions.z);
 		origin = new Vector3f(center.x, center.y, center.z);
-		position(new Vector3f());
-		
-		// Update physics
+        position(new Vector3f());
+
+        // Update physics
 		
 		scene.world.removeRigidBody(body);
 		body.destroy();
