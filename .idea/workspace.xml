@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="93cd022e-dc4e-4126-84fa-70a62463a65d" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/blender/bdx/libs/bdx.jar" afterPath="$PROJECT_DIR$/blender/bdx/libs/bdx.jar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/nilunder/bdx/GameObject.java" afterPath="$PROJECT_DIR$/src/com/nilunder/bdx/GameObject.java" />
     </list>
     <ignored path="bdx.iws" />
@@ -58,8 +57,8 @@
       <file leaf-file-name="GameObject.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/nilunder/bdx/GameObject.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="835" column="0" selection-start-line="835" selection-start-column="0" selection-end-line="835" selection-end-column="0" />
+            <state relative-caret-position="489">
+              <caret line="1076" column="25" selection-start-line="1076" selection-start-column="25" selection-end-line="1076" selection-end-column="25" />
               <folding>
                 <element signature="e#19356#19357#0" expanded="true" />
                 <element signature="e#19399#19400#0" expanded="true" />
@@ -1498,8 +1497,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/nilunder/bdx/GameObject.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="835" column="0" selection-start-line="835" selection-start-column="0" selection-end-line="835" selection-end-column="0" />
+        <state relative-caret-position="489">
+          <caret line="1076" column="25" selection-start-line="1076" selection-start-column="25" selection-end-line="1076" selection-end-column="25" />
           <folding>
             <element signature="e#19356#19357#0" expanded="true" />
             <element signature="e#19399#19400#0" expanded="true" />

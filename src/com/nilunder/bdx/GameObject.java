@@ -1069,10 +1069,12 @@ public class GameObject implements Named{
 		public Vector3f position;
 		public GameObject relativeTo;
 		public HashMap<String, Object> misc;
+        public boolean ghost;
 
 		public Sync() {
 			position = null;
 			misc = new HashMap<>();
+            ghost = false;
 		}
 	}
 
