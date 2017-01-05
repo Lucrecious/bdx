@@ -530,7 +530,10 @@ public class Scene implements Named{
 			}
 		}
 
+		gobj.scale(gobj.sync().scale);
+
         gobj.children.forEach(this::cloneSync);
+
 
         return gobj;
     }
