@@ -141,6 +141,16 @@ public class GameObject implements Named{
 		valid = true;
 	}
 
+    public <T extends Component> T findComponent(Class<T> type) {
+        for (Component c : components) {
+            if (c.getClass().equals(type)) {
+                return type.cast(c);
+            }
+        }
+
+        return null;
+    }
+
 	public String name(){
 		return name;
 	}
@@ -825,9 +835,10 @@ public class GameObject implements Named{
 			visible = false;
 			return;
 		}
-		
+
+		boolean ghost = ghost();
+
 		// Join the transformed vertex arrays
-		
 		int VERT_STRIDE = Bdx.VERT_STRIDE;
 		
 		ArrayList<float[]> tvaList = new ArrayList<float[]>();
@@ -934,6 +945,8 @@ public class GameObject implements Named{
 			}
 			joinedMeshObjects.clear();
 		}
+
+		ghost(ghost);
 	}
 	
 	public void updateJoinedMesh(){
@@ -1067,12 +1080,14 @@ public class GameObject implements Named{
 
 	public static class Sync {
 		public Vector3f position;
+		public Vector3f scale;
 		public GameObject relativeTo;
 		public HashMap<String, Object> misc;
         public boolean ghost;
 
 		public Sync() {
 			position = null;
+			scale = new Vector3f(1, 1, 1);
 			misc = new HashMap<>();
             ghost = false;
 		}
@@ -1087,6 +1102,10 @@ public class GameObject implements Named{
 
 		return sync;
 	}
+
+    public void disposeSync() {
+        sync = null;
+    }
 
 	public boolean isSync() {
 		return sync != null;
