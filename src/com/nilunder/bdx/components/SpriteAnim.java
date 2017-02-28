@@ -31,8 +31,12 @@ public class SpriteAnim extends Component<GameObject> {
 			playDir = 1;
 		}
 
+		public boolean endOfPlay() {
+			return ((playHead - 1 == size() - 1 && playDir == 1) || (playDir == -1 && playHead - 1 == 0)) && !looping;
+		}
+
 		public Vector2f nextFrame(){
-			if (onLastFrame()){
+			if (onLastFrame()) {
 				if (looping)
 					reset();
 				else
