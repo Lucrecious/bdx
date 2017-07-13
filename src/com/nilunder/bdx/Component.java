@@ -3,7 +3,6 @@ package com.nilunder.bdx;
 import com.nilunder.bdx.utils.Named;
 
 public class Component<T extends GameObject> implements Named {
-
 	public State state;
 	public String name;
 	protected T g;

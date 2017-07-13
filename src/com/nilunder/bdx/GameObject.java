@@ -51,6 +51,7 @@ public class GameObject implements Named{
 	public ArrayListGameObject children;
 	
 	public ArrayListNamed<Component> components;
+	public LinkedListNamed<Job> jobs;
 	
 	public ArrayList<GameObject> joinedMeshObjects;
 	
@@ -136,6 +137,7 @@ public class GameObject implements Named{
 		touchingObjectsLast = new ArrayListGameObject();
 		contactManifolds = new ArrayList<PersistentManifold>();
 		components = new ArrayListNamed<Component>();
+		jobs = new LinkedListNamed<>();
 		children = new ArrayListGameObject();
 		materials = new ArrayListMaterials();
 		valid = true;

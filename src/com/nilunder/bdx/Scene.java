@@ -994,6 +994,13 @@ public class Scene implements Named{
 				if (c.state != null)
 					c.state.main();
 			}
+
+			for (int i = 0; i < g.jobs.size(); i++) {
+				Job j = g.jobs.pop();
+				if (!j.main()) {
+					g.jobs.addLast(j);
+				}
+			}
 			g.main();
 		}
 
