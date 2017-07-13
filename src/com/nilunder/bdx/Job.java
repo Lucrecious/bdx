@@ -13,7 +13,7 @@ public class Job<T extends GameObject> implements Named {
     }
 
     public boolean main() {
-        if (state == null) {
+        if (state != null) {
             return false;
         }
 
