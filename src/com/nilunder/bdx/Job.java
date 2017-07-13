@@ -14,6 +14,7 @@ public class Job<T extends GameObject> implements Named {
 
     public boolean main() {
         if (state != null) {
+            state.main();
             return false;
         }
 
